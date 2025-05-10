@@ -1,14 +1,20 @@
-import {Operation} from "@/Operations/Domain/operation.entity.js"
+import {Operation} from "../Domain/operation.entity.js"
 
 export class OperationAssembler {
 
     static toEntitiesFromResponse(response) {
-        if (response.data.status !== "ok") {
-            console.error(`${response.status},  ${response.code}, ${response.message}`);
+        if (!response || !response.data) {
+            console.error('Invalid response received');
             return [];
         }
+        
         const operationResponse = response.data;
-        return operationResponse["operation"].map((operation) => {
+        if (!Array.isArray(operationResponse)) {
+            console.error('Expected array of operations in response');
+            return [];
+        }
+
+        return operationResponse.map((operation) => {
             return this.toEntityFromResource(operation);
         });
     }

@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 import TheHeader from '@/public/Presentation/the-header.component.vue';
 
 const operations = ref([]);
-const operationsService = new OperationsAPIService();
+const operationsService = new OperationsAPIService();  
 
 const getData = async () => {
     try {
@@ -25,7 +25,7 @@ onMounted(() => {
 const router = useRouter();
 
 const navigateToCreate = () => {
-    router.push({ name: 'operations-create' });
+    router.push({ name: '/operations-create' });
 };
 
 const deleteOperation = async (id) => {
@@ -38,6 +38,17 @@ const deleteOperation = async (id) => {
         alert("Error deleting Operation")
     }
 };
+
+const formatDate = (timestamp) => {
+    const date = new Date(parseInt(timestamp));
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
 </script>
 
 <template>
@@ -49,7 +60,7 @@ const deleteOperation = async (id) => {
                     <template #header>
                         <div class="card-header">
                             <pv-input-text
-                                v-model="operation.name"
+                                v-model="operation.title"
                                 disabled
                                 class="w-full operation-input"
                             />
@@ -57,34 +68,33 @@ const deleteOperation = async (id) => {
                     </template>
                     <template #content>
                         <div class="operation-details">
-                            <pv-float-label class="mb-4">
+                            <pv-float-label class="mb-5">
                                 <pv-input-text
-                                    v-model="operation.amount"
+                                    v-model="operation.operationType"
                                     disabled
                                     class="w-full operation-input"
                                 />
-                                <label class="operation-label">Amount</label>
+                                <label class="operation-label">Operation Type</label>
                             </pv-float-label>
                             
                             <pv-float-label class="mb-4">
                                 <pv-input-text
-                                    v-model="operation.createdAt"
+                                    :model-value="formatDate(operation.date)"
                                     disabled
                                     class="w-full operation-input"
                                 />
-                                <label class="operation-label">Created At</label>
+                                <label class="operation-label">Date</label>
                             </pv-float-label>
                         </div>
                     </template>
                     <template #footer>
                         <div class="card-footer">
                             <pv-button 
-                                icon="pi pi-times" 
-                                severity="danger" 
-                                text 
-                                rounded
-                                aria-label="Delete"
+                                label="Delete"
+                                icon="pi pi-trash"
+                                severity="danger"
                                 @click="deleteOperation(operation.id)"
+                                class="p-button-sm w-full"
                             />
                         </div>
                     </template>
@@ -107,32 +117,39 @@ const deleteOperation = async (id) => {
 <style scoped>
 .operations-container {
     padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .operation-card {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     height: 100%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .card-header {
-    padding: 1rem;
+    padding: 0.75rem;
     background-color: var(--surface-section);
 }
 
 .operation-details {
-    padding: 1rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .card-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    padding: 1rem;
+    padding: 0.75rem;
+    border-top: 1px solid var(--surface-border);
 }
 
 .operation-input {
     background-color: var(--surface-ground);
     color: var(--text-color);
+    padding: 0.5rem;
 }
 
 .operation-input:disabled {
@@ -152,10 +169,18 @@ const deleteOperation = async (id) => {
 :deep(.p-inputtext) {
     width: 100%;
     color: var(--text-color);
+    padding: 0.5rem;
+    font-size: 0.9rem;
 }
 
 :deep(.p-float-label) {
     width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+:deep(.p-button.p-button-sm) {
+    font-size: 0.875rem;
+    padding: 0.5rem;
 }
 
 .floating-button {

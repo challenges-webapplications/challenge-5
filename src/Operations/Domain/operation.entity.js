@@ -1,13 +1,13 @@
 export class Operation {
     constructor({
         id = null,
-        name = '',
-        amount = 0,
-        createdAt = ''
+        title = '',
+        operationType = '',
+        date = ''
     } = {}) {
         this.id = id;
-        this.name = name;
-        this.amount = amount;
-        this.createdAt = createdAt;
+        this.title = title;
+        this.operationType = operationType;
+        this.date = date;
     }
 }
